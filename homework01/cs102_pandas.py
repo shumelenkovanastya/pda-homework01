@@ -30,7 +30,7 @@ def find_homonymous_students(df: pd.DataFrame) -> Tuple[bool, int, pd.Series, st
 
     per_course = homonyms.groupby("курс").size()
     group_counts = homonyms.groupby("группа").size().sort_values(ascending=False)
-    max_group = group_counts.index[0] if len(group_counts) else ""
+    max_group = group_counts.index[0]
     return len(homonyms) > 0, len(homonyms), per_course, max_group
     
 
