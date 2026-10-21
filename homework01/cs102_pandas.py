@@ -61,7 +61,10 @@ def analyze_patronyms(df: pd.DataFrame) -> Tuple[int, pd.Series]:
     with_patronym = df[df["patronim"] != ""]
     genders = [gender_identification(p) for p in with_patronym["patronim"]]
     genders_df = pd.DataFrame({"пол": genders})
-    return without_patronym, genders_df.groupby("пол").size()
+    counts = genders_df.groupby("пол").size()
+    counts = counts[counts.index != "unknown"]
+    return without_patronym, counts
+
 
 
 # Задача 4
