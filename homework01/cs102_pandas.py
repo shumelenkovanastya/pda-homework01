@@ -24,14 +24,25 @@ def find_homonymous_students(df: pd.DataFrame) -> Tuple[bool, int, pd.Series, st
      - серию с числом однофамильцев по курсам
      - группу с максимальным числом однофамильцев
     """
+    #находим всех однофамильцев
     surname_counts = df.groupby("surname").size()
     homonym_surnames = surname_counts[surname_counts > 1].index
     homonyms = df[df["surname"].isin(homonym_surnames)]
 
-    per_course = homonyms.groupby("курс").size()
+    # считаем общее количество и наличие
+    has_homonyms = not homonyms.empty
+    total_homonyms = len(homonyms)
+
+    # ищем дубликаты по паре ("курс", "surname")
+    same_course = df[df.duplicated(["курс", "surname"], keep=False)]
+    # Считаем, сколько таких людей на каждом курсе
+    per_course = same_course["курс"].value_counts().sort_index()
+
+    # ищем группу с максимумом
     group_counts = homonyms.groupby("группа").size().sort_values(ascending=False)
     max_group = group_counts.index[0]
-    return len(homonyms) > 0, len(homonyms), per_course, max_group
+
+    return has_homonyms, total_homonyms, per_course, max_group
     
 
 # Задача 3
